@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.johnnycse.flight.service.CityService;
 
 import java.util.List;
 
@@ -13,17 +12,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/city")
 public class CityController {
-    @Autowired
-    CityService cityService;
-
-
-    @GetMapping("/depart")
-    public List<String> depart(){
-        return cityService.getDepartCity();
-    }
-
-    @GetMapping("/destin")
-    public List<String> destin(){
-        return cityService.getDestnCity();
-    }
+//    @Autowired
+//    CityService cityService;
+//
+//
+//    @GetMapping("/depart")
+//    public List<String> depart(){
+//        return cityService.getDepartCity();
+//    }
+//
+//    @GetMapping("/destin")
+//    public List<String> destin(){
+//        return cityService.getDestnCity();
+//    }
 }

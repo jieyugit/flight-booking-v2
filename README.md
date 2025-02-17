@@ -23,3 +23,8 @@ Linked: [Airline Reservation Frontend](https://github.com/JieYu-Johnny/AirlineTi
   - test api for seat
 - 2023/3/6
   - create api for user login and sign out
+- 2025/2/17
+  - Implemented user registration API with username and phone validation
+  - Implemented user login API with username and password verification
+  - Added JWT generation and validation, returning token after successful login
+  - Fixed user data retrieval and storage issues, optimized service layer logic

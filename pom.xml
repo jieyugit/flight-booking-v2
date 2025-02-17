@@ -29,6 +29,25 @@
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>2.2.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version> <!-- JUnit 4 -->
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>mysql</groupId>

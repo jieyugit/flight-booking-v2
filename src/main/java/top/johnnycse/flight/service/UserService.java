@@ -1,13 +1,18 @@
 package top.johnnycse.flight.service;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import top.johnnycse.flight.dto.request.RegisterRequest;
+import top.johnnycse.flight.dto.response.UserLoginResponse;
 import top.johnnycse.flight.pojo.User;
+import top.johnnycse.flight.utils.SnowFlakeUtil;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+public interface UserService extends UserDetailsService {
 
-public interface UserService {
-    public User getUserById(Integer Id);
-    public Map<String, Object> getUserNameFromToken(HttpServletRequest request);
+    public UserLoginResponse login(String username, String password);
 
-    Integer getUserByName(String userName);
+    public User loadUserById(Long userId);
+
+    public void register(RegisterRequest request);
+
 }
