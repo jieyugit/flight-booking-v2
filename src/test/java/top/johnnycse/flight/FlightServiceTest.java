@@ -19,7 +19,7 @@ public class FlightServiceTest {
     @Autowired
     private FlightRepository flightRepository;
 
-//    @Test
+    @Test
     public void testFindTransitRoutes() {
         // 设定测试日期
         LocalDate departureDate = LocalDate.parse("2024-04-11");

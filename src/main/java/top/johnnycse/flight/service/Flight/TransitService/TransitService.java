@@ -1,12 +1,14 @@
 package top.johnnycse.flight.service.Flight.TransitService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import top.johnnycse.flight.enums.FlightClass;
 import top.johnnycse.flight.pojo.Cabin;
 import top.johnnycse.flight.pojo.Flight;
 import top.johnnycse.flight.repository.CabinRepository;
 import top.johnnycse.flight.repository.FlightRepository;
+import top.johnnycse.flight.service.Flight.FlightService;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -19,33 +21,15 @@ public class TransitService {
     private FlightRepository flightRepository;
     @Autowired
     private CabinRepository cabinRepository;
+    @Autowired
+    private FlightService flightService;
 
-    /**
-     * 查询指定日期的航班
-     */
-    public List<Flight> findFlightsOnDate(LocalDate departureDate) {
-        return flightRepository.findFlightsByDate(departureDate);
-    }
-
-    /**
-     * 获得舱位的价格
-     */
-
-    private double getPriceForFlightAndClass(Flight flight, FlightClass flightClass) {
-        List<Cabin> cabins = cabinRepository.findCabinsByFlightId(flight.getFlightId());
-        for (Cabin cabin : cabins) {
-            if (cabin.getCabinClass()==flightClass.getCode()) {
-                return cabin.getBasePrice().doubleValue();
-            }
-        }
-        return 0.0; // 如果没有找到合适的舱位价格，返回 0
-    }
 
     /**
      * 计算当天的中转方案
      */
     public List<TransitRoute> findTransitRoutes(String departure, String arrival, LocalDate departureDate, int maxTransit) {
-        List<Flight> allFlights = findFlightsOnDate(departureDate);
+        List<Flight> allFlights = flightService.findFlightsOnDate(departureDate);
 
         // 构建航班图，机场为节点，航班为边
         Map<String, List<Flight>> flightMap = new HashMap<>();
@@ -87,7 +71,7 @@ public class TransitService {
                 long newDuration = route.getTotalDuration() +
                         Duration.between(nextFlight.getDepartureTime(), nextFlight.getArrivalTime()).toMinutes();
 
-                double newPrice = route.getTotalPrice() + getPriceForFlightAndClass(nextFlight, FlightClass.ECONOMY);
+                double newPrice = route.getTotalPrice() + flightService.getPriceForFlightAndClass(nextFlight, FlightClass.ECONOMY);
 
                 // 生成新的中转路线
                 List<Flight> newPath = new ArrayList<>(currentPath);

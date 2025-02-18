@@ -6,17 +6,23 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import top.johnnycse.flight.dto.response.FlightDTO;
+import top.johnnycse.flight.enums.FlightClass;
 import top.johnnycse.flight.enums.FlightStatus;
+import top.johnnycse.flight.pojo.Cabin;
 import top.johnnycse.flight.pojo.Flight;
+import top.johnnycse.flight.repository.CabinRepository;
 import top.johnnycse.flight.repository.FlightRepository;
 import top.johnnycse.flight.service.Flight.FlightService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class FlightServiceImpl implements FlightService {
     @Autowired
     private FlightRepository flightRepository;
+    @Autowired
+    private CabinRepository cabinRepository;
 
     @Override
     public boolean addFlight(FlightDTO flightDTO) {
@@ -69,6 +75,28 @@ public class FlightServiceImpl implements FlightService {
     @Cacheable(value = "flight", key = "'flight_id_'+#id")
     public Flight getFlightById(Long id) {
         return flightRepository.getFlightById(id);
+    }
+
+    /**
+     * 查询指定日期的航班
+     */
+    @Cacheable(value = "flight", key = "'flight_date_'+#departureDate")
+    public List<Flight> findFlightsOnDate(LocalDate departureDate) {
+        return flightRepository.findFlightsByDate(departureDate);
+    }
+
+    /**
+     * 获得舱位的价格
+     */
+    @Cacheable(value = "cabin", key = "'cabinPrice_'+#flight.getFlightId()+'_'+#flightClass.getCode()")
+    public double getPriceForFlightAndClass(Flight flight,FlightClass flightClass) {
+        List<Cabin> cabins = cabinRepository.findCabinsByFlightId(flight.getFlightId());
+        for (Cabin cabin : cabins) {
+            if (cabin.getCabinClass()==flightClass.getCode()) {
+                return cabin.getBasePrice().doubleValue();
+            }
+        }
+        return 0.0; // 如果没有找到合适的舱位价格，返回 0
     }
 
 
