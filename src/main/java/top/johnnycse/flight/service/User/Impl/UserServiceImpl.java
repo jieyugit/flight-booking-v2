@@ -1,4 +1,4 @@
-package top.johnnycse.flight.service.Impl;
+package top.johnnycse.flight.service.User.Impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -11,18 +11,16 @@ import org.springframework.stereotype.Service;
 import top.johnnycse.flight.dto.request.RegisterRequest;
 import top.johnnycse.flight.dto.response.UserLoginResponse;
 import top.johnnycse.flight.pojo.User;
-import top.johnnycse.flight.repository.userRepository;
-import top.johnnycse.flight.service.UserService;
+import top.johnnycse.flight.repository.UserRepository;
+import top.johnnycse.flight.service.User.UserService;
 import top.johnnycse.flight.utils.JwtUtil;
 import top.johnnycse.flight.utils.SnowFlakeUtil;
-
-import java.util.Optional;
 
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
-    private userRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
     private StringRedisTemplate redisTemplate;
     @Autowired

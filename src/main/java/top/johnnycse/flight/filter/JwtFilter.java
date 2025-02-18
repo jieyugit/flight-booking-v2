@@ -4,7 +4,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import top.johnnycse.flight.pojo.User;
-import top.johnnycse.flight.service.UserService;
+import top.johnnycse.flight.service.User.UserService;
 import top.johnnycse.flight.utils.JwtUtil;
 
 import javax.servlet.FilterChain;

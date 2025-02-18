@@ -1,14 +1,8 @@
-package top.johnnycse.flight.controller;
+package top.johnnycse.flight.controller.bak;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.johnnycse.flight.service.UserService;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @CrossOrigin("*")
 @RestController

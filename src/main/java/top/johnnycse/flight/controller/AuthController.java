@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import top.johnnycse.flight.dto.request.LoginRequest;
 import top.johnnycse.flight.dto.request.RegisterRequest;
 import top.johnnycse.flight.dto.response.UserLoginResponse;
-import top.johnnycse.flight.service.UserService;
+import top.johnnycse.flight.service.User.UserService;
 import top.johnnycse.flight.utils.ApiResponse;
 
 import javax.validation.Valid;

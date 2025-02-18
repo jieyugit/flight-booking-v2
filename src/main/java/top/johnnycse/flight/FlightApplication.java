@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @EnableTransactionManagement
 @SpringBootApplication
-@MapperScan("top.johnnycse.flight.repository")
 public class FlightApplication {
 
     public static void main(String[] args) {

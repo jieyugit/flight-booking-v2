@@ -1,4 +1,4 @@
-package top.johnnycse.flight.service;
+package top.johnnycse.flight.service.User;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
