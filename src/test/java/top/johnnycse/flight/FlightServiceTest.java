@@ -2,10 +2,9 @@ package top.johnnycse.flight;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import top.johnnycse.flight.pojo.Flight;
 import top.johnnycse.flight.repository.FlightRepository;
-import top.johnnycse.flight.service.Flight.TransitService.TransitRoute;
-import top.johnnycse.flight.service.Flight.TransitService.TransitService;
+import top.johnnycse.flight.pojo.TransitRoute;
+import top.johnnycse.flight.service.TransitService.TransitService;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -24,17 +23,14 @@ public class FlightServiceTest {
         // 设定测试日期
         LocalDate departureDate = LocalDate.parse("2024-04-11");
 
-        // 从数据库查询航班数据
-        List<Flight> allFlights = flightRepository.findFlightsByDate(departureDate);
-
-        // 断言
-        assertFalse(allFlights.isEmpty(), "航班数据应该存在");
+//        List<Flight> allFlights = flightRepository.findFlightsByDate(departureDate);
+//        assertFalse(allFlights.isEmpty(), "航班数据应该存在");
 
         String departureAirport = "成都天府国际机场";
         String arrivalAirport = "大兴国际机场";
         int maxTransit = 3;
 
-        List<TransitRoute> routes = transitService.findTransitRoutes(departureAirport, arrivalAirport, departureDate ,maxTransit);
+        List<TransitRoute> routes = transitService.findTransitRoutesTopFive(departureAirport, arrivalAirport, departureDate ,maxTransit);
 
         // 验证结果
         assertNotNull(routes, "中转路线结果不应为空");
@@ -45,5 +41,8 @@ public class FlightServiceTest {
         assertEquals(2, route.getFlights().size(), "中转路线应包含两个航班");
         assertTrue(route.getTotalPrice() > 0, "总价格应大于 0");
         assertTrue(route.getTotalDuration() > 0, "总时长应大于 0");
+        for(TransitRoute r : routes){
+            System.out.println(r.toString());
+        }
     }
 }

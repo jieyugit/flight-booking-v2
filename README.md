@@ -28,3 +28,8 @@ Linked: [Airline Reservation Frontend](https://github.com/JieYu-Johnny/AirlineTi
   - Implemented user login API with username and password verification
   - Added JWT generation and validation, returning token after successful login
   - Fixed user data retrieval and storage issues, optimized service layer logic
+- 2025/02/21
+  feat: Implement partial seat selection functionality
+  - Added MongoDB database integration for seat management
+  - Implemented logic for storing seat data within the MongoDB collection
+  - Updated service to handle seat availability and booking status

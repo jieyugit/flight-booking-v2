@@ -1,13 +1,13 @@
-package top.johnnycse.flight.service.Flight.TransitService;
+package top.johnnycse.flight.pojo;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import top.johnnycse.flight.pojo.Flight;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 public class TransitRoute {
     private List<Flight> flights;
     private double totalPrice;
