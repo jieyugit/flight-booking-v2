@@ -30,7 +30,7 @@ public class FlightServiceTest {
         String arrivalAirport = "大兴国际机场";
         int maxTransit = 3;
 
-        List<TransitRoute> routes = transitService.findTransitRoutesTopFive(departureAirport, arrivalAirport, departureDate ,maxTransit);
+        List<TransitRoute> routes = transitService.findTransitRoutesTopFive(departureAirport, arrivalAirport, departureDate ,maxTransit,5); //找出前五个中转方案
 
         // 验证结果
         assertNotNull(routes, "中转路线结果不应为空");

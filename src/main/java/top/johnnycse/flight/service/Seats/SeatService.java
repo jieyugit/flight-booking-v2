@@ -9,11 +9,8 @@ import java.util.List;
 public interface SeatService {
     public Cabin_Seats getSeatsByFlightId(long flightId);
 
-    // 根据舱位类别查询座位
-    public List<Cabin_Seats> getSeatsByCabinClass(int cabinClass);
-
-    // 根据座位编号查询座位
-    public Cabin_Seats getSeatBySeatNumber(String seatNumber);
+    // 根据座位编号和航班号查询座位
+    public Cabin_Seats getSeatBySeatNumber(long flightId,String seatNumber);
 
     /**
      * 根据航班号和舱位类别查询未预定的座位
@@ -30,7 +27,8 @@ public interface SeatService {
      * @param seatNumber 座位号
      * @param isBooked 预订状态 (true - 已预定, false - 未预定)
      */
-    boolean updateSeatBookingStatus(long flightId, long cabinId, String seatNumber, boolean isBooked);
+    boolean updateSeatBookingStatus(long flightId, long cabinId, String seatNumber,boolean isBooked);
+
 
 
 }

@@ -33,3 +33,8 @@ Linked: [Airline Reservation Frontend](https://github.com/JieYu-Johnny/AirlineTi
   - Added MongoDB database integration for seat management
   - Implemented logic for storing seat data within the MongoDB collection
   - Updated service to handle seat availability and booking status
+- 2025/03/02
+  feat: Continue to improve seat reservation functionality
+  - Enhanced seat reservation logic and flow
+  - Fixed related issues and edge cases in the seat booking process
+  - Refined the integration with MongoDB for better seat management

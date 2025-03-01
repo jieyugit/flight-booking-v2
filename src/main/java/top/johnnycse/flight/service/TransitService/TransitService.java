@@ -84,7 +84,11 @@ public class TransitService {
     /**
      * 计算按时间排序的前五个中转方案
      */
-    public List<TransitRoute> findTransitRoutesTopFive(String departure, String arrival, LocalDate departureDate, int maxTransit) {
+    public List<TransitRoute> findTransitRoutesTopFive(String departure, String arrival, LocalDate departureDate, int maxTransit, int range) {
+        if(range <0){
+            throw new RuntimeException("range should be positive");
+        }
+
         List<Flight> allFlights = flightService.findFlightsOnDate(departureDate);
 
         // 构建航班图（按起飞时间排序）
@@ -103,7 +107,7 @@ public class TransitService {
         List<TransitRoute> validRoutes = new ArrayList<>();
         Map<String, TransitRoute> bestRoutesToAirport = new HashMap<>(); // 记录到达某个机场的最优方案
 
-        while (!queue.isEmpty() && validRoutes.size() < 5) { // 仅保留前5个最优解
+        while (!queue.isEmpty() && validRoutes.size() < range) {
             TransitRoute route = queue.poll();
             List<Flight> currentPath = route.getFlights();
             String lastAirport = currentPath.isEmpty() ? departure : currentPath.get(currentPath.size() - 1).getArrivalAirport();

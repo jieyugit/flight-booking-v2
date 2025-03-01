@@ -1,6 +1,16 @@
 package top.johnnycse.flight.service.Seats.Impl;
 
+import com.mongodb.client.result.UpdateResult;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.core.query.Query;
+
 import org.springframework.stereotype.Service;
 import top.johnnycse.flight.pojo.Cabin_Seats;
 import top.johnnycse.flight.pojo.Seat;
@@ -12,12 +22,17 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class SeatServiceImpl implements SeatService {
+public class SeatServiceImpl implements SeatService, ApplicationContextAware {
     @Autowired
     private SeatRepository seatRepository;
 
+    private ApplicationContext applicationContext;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Override
+    //@Cacheable(value = "seats", key = "'seats_'+#flightId") 测试之后不用缓存
     public Cabin_Seats getSeatsByFlightId(long flightId) {
         Optional<Cabin_Seats> cabinSeats = seatRepository.findByFlightId(flightId);
 
@@ -29,38 +44,51 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public List<Cabin_Seats> getSeatsByCabinClass(int cabinClass) {
-        return seatRepository.findByCabinClass(cabinClass);
-    }
-
-    @Override
-    public Cabin_Seats getSeatBySeatNumber(String seatNumber) {
-        return seatRepository.findBySeatNumber(seatNumber);
+    public Cabin_Seats getSeatBySeatNumber(long flightId, String seatNumber) {
+        Optional<Cabin_Seats> results = seatRepository.findByFlightId(flightId);
+        if (!results.isPresent()) {
+            throw new RuntimeException("No seats found for flightId: " + flightId);
+        }
+        results.get().getSeats().removeIf(result -> !result.getSeatNumber().equals(seatNumber));
+        if (results.get().getSeats().isEmpty()) {
+            throw new RuntimeException("No seat found for seatNumber: " + seatNumber);
+        }
+        return results.get();
     }
 
     @Override
     public List<String> getAvailableSeatsByFlightIdAndClass(long flightId, int cabinClass) {
-        List<Cabin_Seats> availableSeatsByFlightIdAndClass = seatRepository.findAvailableSeatsByFlightIdAndClass(flightId, cabinClass);
-        //应该只有一条数据
-        if(availableSeatsByFlightIdAndClass.isEmpty()){
+        Optional<Cabin_Seats> byFlightId = seatRepository.findByFlightId(flightId);
+        if (!byFlightId.isPresent()) {
             throw new RuntimeException("No seats found for flightId: " + flightId);
-        }else if(availableSeatsByFlightIdAndClass.size() > 1){
-            throw new RuntimeException("More than one seats found for flightId: " + flightId);
         }
+        List<Seat> results = byFlightId.get().getSeats();
+        results.removeIf(result -> result.getCabinClass() != cabinClass || result.isBooked());
+
         List<String> ret = new LinkedList<>();
-
-        // 转为List<Seat>
-        availableSeatsByFlightIdAndClass.get(0).getSeats().forEach(seat -> {
+        for (Seat seat : results) {
             ret.add(seat.getSeatNumber());
-        });
-        return ret;
+        }
 
+        return ret;
     }
+
 
     @Override
-    public boolean updateSeatBookingStatus(long flightId, long cabinId, String seatNumber, boolean isBooked) {
-        return seatRepository.updateSeatBookingStatus(flightId, cabinId, seatNumber, isBooked);
+    public boolean updateSeatBookingStatus(long flightId, long cabinId, String seatNumber ,boolean isBooked) {
+        Query query = new Query(Criteria.where("flight_id").is(flightId)
+                .and("seats.cabin_id").is(cabinId)
+                .and("seats.seat_number").is(seatNumber));
+        Update update = new Update();
+        update.set("seats.$.is_booked", isBooked);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Cabin_Seats.class);
+        return result.getModifiedCount() > 0;
     }
 
-
+    //解决@Cacheable注解时同一个类中调用缓存方法不生效
+    // 需要调用其他缓存方法时需要applicationContext.getBean(xxxx.class);再调用方法
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 }
