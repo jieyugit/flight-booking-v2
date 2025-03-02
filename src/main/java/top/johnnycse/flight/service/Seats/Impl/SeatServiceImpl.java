@@ -5,6 +5,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -78,11 +79,15 @@ public class SeatServiceImpl implements SeatService, ApplicationContextAware {
     public boolean updateSeatBookingStatus(long flightId, long cabinId, String seatNumber ,boolean isBooked) {
         Query query = new Query(Criteria.where("flight_id").is(flightId)
                 .and("seats.cabin_id").is(cabinId)
-                .and("seats.seat_number").is(seatNumber));
-        Update update = new Update();
-        update.set("seats.$.is_booked", isBooked);
-        UpdateResult result = mongoTemplate.updateFirst(query, update, Cabin_Seats.class);
-        return result.getModifiedCount() > 0;
+                .and("seats.seat_number").is(seatNumber)
+                .and("seats.is_booked").is(false));
+        Update update = new Update().set("seats.$.is_booked", isBooked);
+        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true); //原子操作，保证只有一个线程能够修改数据
+        Cabin_Seats updatedSeat = mongoTemplate.findAndModify(query, update, options, Cabin_Seats.class);
+        if (updatedSeat == null) {
+            throw new RuntimeException("Seat already booked by another user.");
+        }
+        return true;
     }
 
     //解决@Cacheable注解时同一个类中调用缓存方法不生效

@@ -38,3 +38,5 @@ Linked: [Airline Reservation Frontend](https://github.com/JieYu-Johnny/AirlineTi
   - Enhanced seat reservation logic and flow
   - Fixed related issues and edge cases in the seat booking process
   - Refined the integration with MongoDB for better seat management
+- 2025/03/02
+  Completed the development of the flight booking system with integrated MongoDB, Kafka, and Redis for distributed transaction management.
